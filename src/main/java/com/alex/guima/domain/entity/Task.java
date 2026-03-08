@@ -1,26 +1,23 @@
 package com.alex.guima.domain.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import com.alex.guima.domain.entity.interfaces.Completable;
-
+import com.alex.guima.domain.interfaces.Completable;
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "tasks")
 public class Task extends PanacheEntity implements Completable {
+
     @Column(nullable = false, length = 36)
     private String title;
-    
+
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean completed;
 
-    @Column(nullable = true)
     private LocalDateTime dueDate;
 
     public Task() {
@@ -44,8 +41,8 @@ public class Task extends PanacheEntity implements Completable {
         return completed;
     }
 
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
+    public void complete() {
+        this.completed = true;
     }
 
     public LocalDateTime getDueDate() {
@@ -54,6 +51,5 @@ public class Task extends PanacheEntity implements Completable {
 
     public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
-    }    
-    
+    }
 }

@@ -1,19 +1,15 @@
-package com.alex.guima;
+package com.alex.guima.application;
 
-import java.util.List;
-
+import com.alex.guima.application.dto.TaskDTO;
 import com.alex.guima.domain.entity.Task;
 import com.alex.guima.domain.service.TaskService;
-import com.alex.guima.dto.TaskDTO;
-
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
+import jakarta.ws.rs.*;
+
+import java.util.List;
 
 @Path("/task")
 @ApplicationScoped
@@ -21,20 +17,19 @@ public class TaskResource {
     private final TaskService taskService;
 
     @Inject
-    public TaskResource(TaskService taskService) {
+    TaskResource(TaskService taskService) {
         this.taskService = taskService;
-    }
-
-
-    @GET
-    public Uni<List<Task>> listAll() {
-        return taskService.listAll();
     }
 
     @GET
     @Path("/{id}")
-    public Uni<Task> findById(Long id) {
+    public Uni<Task> findByID(Long id) {
         return taskService.findById(id);
+    }
+
+    @GET
+    public Uni<List<Task>> getAllTasks() {
+        return taskService.listAll();
     }
 
     @POST
@@ -46,7 +41,14 @@ public class TaskResource {
     @PUT
     @Path("/{id}")
     @WithTransaction
-    public Uni<Task> update(Long id, TaskDTO updatedTask) {
-        return taskService.updateTask(id, updatedTask);
+    public Uni<Task> updateTask(Long id, TaskDTO task) {
+        return taskService.updateTask(id, task);
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @WithTransaction
+    public Uni<Void> deleteTask(Long id) {
+        return taskService.deleteTask(id);
     }
 }
