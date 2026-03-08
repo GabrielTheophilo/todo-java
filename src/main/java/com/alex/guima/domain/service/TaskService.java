@@ -33,8 +33,7 @@ public class TaskService {
 
     @WithTransaction
     public Uni<Task> createTask(@NonNull TaskDTO task) {
-        LocalDateTime dueDate = validateDueDate(task.dueDate());
-        return taskRepository.persist(new Task(task.title(), task.completed(), dueDate));
+        return taskRepository.persist(new Task(task.title(), task.completed(), task.dueDate()));
     }
 
     @WithTransaction
@@ -44,7 +43,7 @@ public class TaskService {
             if (task.isCompleted()) {
                 throw new IllegalUpdate("Cannot update a completed task");
             }
-            task.setDueDate(validateDueDate(updatedTask.dueDate()));
+            task.setDueDate(updatedTask.dueDate());
             if (updatedTask.completed()) task.complete();
             task.setTitle(updatedTask.title());
             return taskRepository.persist(task);
@@ -58,13 +57,5 @@ public class TaskService {
                 throw new NotFoundException("Task with id " + id + " not found");
             }
         }).replaceWithVoid();
-    }
-
-    private @NonNull LocalDateTime validateDueDate(@NonNull LocalDateTime dueDate) {
-        if (dueDate.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Due date cannot be in the past");
-        }
-
-        return dueDate;
     }
 }
